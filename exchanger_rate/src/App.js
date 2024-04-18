@@ -1,7 +1,7 @@
 import React from "react";
 import Axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { setRates } from "./redux/slice";
+import { setRate, setDate } from "./redux/slice";
 
 function App() {
   const [cost, setCost] = React.useState(0);
@@ -13,12 +13,11 @@ function App() {
     "JPY",
     "CNY",
   ]);
-  const [date, setDate] = React.useState("2022-01-01");
   const [choose, setChoose] = React.useState("USD");
   const [choose2, setChoose2] = React.useState("CAD");
 
   const dispatch = useDispatch();
-  const { rates } = useSelector((state) => state.exchange);
+  const { rate, date } = useSelector((state) => state.exchange);
 
   React.useEffect(() => {
     try {
@@ -30,12 +29,12 @@ function App() {
           },
         }
       ).then((response) => {
-        dispatch(setRates(response.data.rates));
+        dispatch(setRate(response.data.rates));
       });
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [date]);
 
   const costChanged = (e) => {
     e.target.value = Number(e.target.value.replace(/[^0-9]/g, ""));
@@ -54,6 +53,10 @@ function App() {
 
   const countryClick = (e) => {
     setChoose2(e.target.value);
+  };
+
+  const dateChanged = (e) => {
+    dispatch(setDate(e.target.value));
   };
 
   return (
@@ -92,9 +95,12 @@ function App() {
         })}
       </div>
       <div>
-        {choose2}: {(cost / rates[choose]) * rates[choose2]}
+        {choose2}: {(cost / rate[choose]) * rate[choose2]}
       </div>
-      <div>기준일: {date}</div>
+      <div>
+        기준일
+        <input id="dateIn" type="date" value={date} onChange={dateChanged} />
+      </div>
     </div>
   );
 }

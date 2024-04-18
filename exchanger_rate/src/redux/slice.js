@@ -1,19 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  rates: {},
+  rate: {},
+  date: "2022-01-01",
 };
 
 const exchangeSlice = createSlice({
   name: "exchange",
   initialState,
   reducers: {
-    setRates(state, action) {
-      state.rates = action.payload;
+    setRate(state, action) {
+      state.rate = action.payload;
+    },
+    setDate(state, action) {
+      state.date = action.payload;
     },
   },
 });
 
-export const { setRates } = exchangeSlice.actions;
+export const { setRate, setDate } = exchangeSlice.actions;
 
 export default exchangeSlice.reducer;

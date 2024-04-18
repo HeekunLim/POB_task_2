@@ -1,5 +1,7 @@
 import React from "react";
 import Axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { setRates } from "./redux/slice";
 
 function App() {
   const [cost, setCost] = React.useState(0);
@@ -11,36 +13,29 @@ function App() {
     "JPY",
     "CNY",
   ]);
-  const [rate, setRate] = React.useState({
-    USD: 1,
-    CAD: 1.37578,
-    KRW: 1373.879772,
-    HKD: 7.830905,
-    JPY: 154.4335,
-    CNY: 7.238402,
-  });
   const [date, setDate] = React.useState("2022-01-01");
   const [choose, setChoose] = React.useState("USD");
   const [choose2, setChoose2] = React.useState("CAD");
 
-  // React.useEffect(() => {
-  //   try {
-  //     Axios.get(
-  //       `https://api.apilayer.com/exchangerates_data/latest?base=USD&symbols=USD,CAD,KRW,HKD,JPY,CNY&apikey=${process.env.REACT_APP_API_KEY}`,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     ).then((response) => {
-  //       console.log(response.data.rates);
+  const dispatch = useDispatch();
+  const { rates } = useSelector((state) => state.exchange);
 
-  //       setRate(response.data.rates);
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, []);
+  React.useEffect(() => {
+    try {
+      Axios.get(
+        `https://api.apilayer.com/exchangerates_data/${date}?base=USD&symbols=USD,CAD,KRW,HKD,JPY,CNY&apikey=${process.env.REACT_APP_API_KEY}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((response) => {
+        dispatch(setRates(response.data.rates));
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const costChanged = (e) => {
     e.target.value = Number(e.target.value.replace(/[^0-9]/g, ""));
@@ -71,8 +66,6 @@ function App() {
           placeholder={choose}
           onChange={costChanged}
         />
-      </div>
-      <div>
         <select id="countryIn" onChange={countryChanged} defaultValue="USD">
           {country.map((country1) => {
             return (
@@ -99,7 +92,7 @@ function App() {
         })}
       </div>
       <div>
-        {choose2}: {(cost / rate[choose]) * rate[choose2]}
+        {choose2}: {(cost / rates[choose]) * rates[choose2]}
       </div>
       <div>기준일: {date}</div>
     </div>

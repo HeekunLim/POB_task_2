@@ -5,14 +5,20 @@ import { setRate, setDate } from "./redux/slice";
 import styled from "styled-components";
 
 function App() {
+  // 지원 국가 목록
   const country = ["USD", "CAD", "KRW", "HKD", "JPY", "CNY"];
+  // 입력된 금액
   const [cost, setCost] = React.useState(0);
+  // 드롭다운 메뉴에서 선택된 국가
   const [choose, setChoose] = React.useState("USD");
+  // 버튼으로 선택된 국가
   const [choose2, setChoose2] = React.useState("CAD");
 
+  // redux에 있는 api에서 받아온 환율, 선택된 날짜
   const dispatch = useDispatch();
   const { rate, date } = useSelector((state) => state.exchange);
 
+  // 날짜가 변경될 때 마다 새 환율 데이터 호출
   React.useEffect(() => {
     try {
       Axios.get(
@@ -30,26 +36,38 @@ function App() {
     }
   }, [date]);
 
+  // 입력된 금액 변화 이벤트
   const costChanged = (e) => {
+    // 숫자 이외에는 제거
     e.target.value = Number(e.target.value.replace(/[^0-9]/g, ""));
+    // 금액 저장
     setCost(e.target.value);
+    // 콤마 추가
     e.target.value = e.target.value
       .toString()
       .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  // 드롭다운 메뉴 선택 이벤트
   const countryChanged = (e) => {
+    // 선택된 국가 저장
     setChoose(e.target.value);
 
+    // 버튼 갯수는 5개로 유지해야 되기에
+    // 버튼으로 선택된 국가의 초기값을 지정
     if (e.target.value === "USD") setChoose2("CAD");
     else setChoose2("USD");
   };
 
+  // 버튼 클릭 이벤트
   const countryClick = (e) => {
+    // 클릭된 국가 저장
     setChoose2(e.target.value);
   };
 
+  // 날짜 선택 이벤트
   const dateChanged = (e) => {
+    // 선택된 국가 저장
     dispatch(setDate(e.target.value));
   };
 
@@ -117,6 +135,7 @@ function App() {
           >
             {choose2 + ":"}&nbsp;
           </p>
+          {/* 환율을 선택된 국가들의 비율에 따라 계산 후 출력 */}
           <p
             style={{
               fontSize: "50px",

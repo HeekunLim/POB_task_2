@@ -30,29 +30,11 @@ function App() {
     "Dec",
   ];
   // 날짜 다른 포맷
-  const [date2, setDate2] = React.useState("2022-Jan-01");
+  const [date2, setDate2] = React.useState("날짜를 선택해주세요");
 
   // redux에 있는 api에서 받아온 환율, 선택된 날짜
   const dispatch = useDispatch();
   const { rate, date } = useSelector((state) => state.exchange);
-
-  // 날짜가 변경될 때 마다 새 환율 데이터 호출
-  React.useEffect(() => {
-    try {
-      Axios.get(
-        `https://api.apilayer.com/exchangerates_data/${date}?base=USD&symbols=USD,CAD,KRW,HKD,JPY,CNY&apikey=${process.env.REACT_APP_API_KEY}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((response) => {
-        dispatch(setRate(response.data.rates));
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }, [date]);
 
   // 입력된 금액 변화 이벤트
   const costChanged = (e) => {
@@ -87,6 +69,22 @@ function App() {
 
   // 날짜 선택 이벤트
   const dateChanged = (e) => {
+    // 선택된 날짜의 api 가져오기
+    try {
+      Axios.get(
+        `https://api.apilayer.com/exchangerates_data/${date}?base=USD&symbols=USD,CAD,KRW,HKD,JPY,CNY&apikey=${process.env.REACT_APP_API_KEY}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((response) => {
+        dispatch(setRate(response.data.rates));
+      });
+    } catch (error) {
+      console.error(error);
+    }
+
     // 선택된 국가 저장
     dispatch(setDate(e.target.value));
 

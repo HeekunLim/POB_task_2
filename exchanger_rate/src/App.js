@@ -58,8 +58,10 @@ function App() {
   const costChanged = (e) => {
     // 숫자 이외에는 제거
     e.target.value = Number(e.target.value.replace(/[^0-9]/g, ""));
+
     // 금액 저장
     setCost(e.target.value);
+
     // 콤마 추가
     e.target.value = e.target.value
       .toString()
@@ -94,13 +96,15 @@ function App() {
     const month = months[newDate.getMonth()];
     const day =
       newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate();
+
     setDate2(`${year}-${month}-${day}`);
   };
 
   return (
     <StyledAppContainer>
       <StyledInnerContainer>
-        <StyledInputRow>
+        <StyledCenter>
+          {/* 금액 입력 */}
           <input
             id="costInput"
             type="text"
@@ -113,6 +117,8 @@ function App() {
               margin: "5px",
             }}
           />
+
+          {/* 드롭다운 메뉴 국가 선택 */}
           <select
             id="countryIn"
             onChange={countryChanged}
@@ -131,8 +137,10 @@ function App() {
               );
             })}
           </select>
-        </StyledInputRow>
-        <StyledButtonRow>
+        </StyledCenter>
+
+        <StyledCenter>
+          {/* 버튼 국가 선택 */}
           {country.map((country2) => {
             if (country2 !== choose)
               return (
@@ -151,8 +159,10 @@ function App() {
                 </button>
               );
           })}
-        </StyledButtonRow>
+        </StyledCenter>
+
         <StyledResultRow>
+          {/* 환율 계산 결과 출력 */}
           <p
             style={{
               fontSize: "50px",
@@ -161,7 +171,8 @@ function App() {
           >
             {choose2 + ":"}&nbsp;
           </p>
-          {/* 환율을 선택된 국가들의 비율에 따라 계산 후 출력 */}
+
+          {/* 환율을 선택된 국가들의 비율에 따라 계산*/}
           <p
             style={{
               fontSize: "50px",
@@ -170,14 +181,20 @@ function App() {
             {(cost / rate[choose]) * rate[choose2]}
           </p>
         </StyledResultRow>
-        <p
-          style={{
-            fontSize: "30px",
-          }}
-        >
-          {date2}
-        </p>
-        <StyledDateRow>
+
+        <StyledCenter>
+          {/* 선택된 날짜를 다른 포맷으로 출력 */}
+          <p
+            style={{
+              fontSize: "30px",
+            }}
+          >
+            {date2}
+          </p>
+        </StyledCenter>
+
+        <StyledCenter>
+          {/* 날짜 선택 */}
           <p
             style={{
               fontSize: "30px",
@@ -194,7 +211,7 @@ function App() {
               fontSize: "30px",
             }}
           />
-        </StyledDateRow>
+        </StyledCenter>
       </StyledInnerContainer>
     </StyledAppContainer>
   );
@@ -219,14 +236,7 @@ const StyledInnerContainer = styled.div`
   border: solid;
 `;
 
-const StyledInputRow = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-`;
-
-const StyledButtonRow = styled.div`
+const StyledCenter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -239,11 +249,4 @@ const StyledResultRow = styled.div`
   align-items: center;
   flex-direction: row;
   height: 300px;
-`;
-
-const StyledDateRow = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
 `;

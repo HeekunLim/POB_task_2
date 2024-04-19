@@ -14,6 +14,24 @@ function App() {
   // 버튼으로 선택된 국가
   const [choose2, setChoose2] = React.useState("CAD");
 
+  // 월 목록
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  // 날짜 다른 포맷
+  const [date2, setDate2] = React.useState("2022-Jan-01");
+
   // redux에 있는 api에서 받아온 환율, 선택된 날짜
   const dispatch = useDispatch();
   const { rate, date } = useSelector((state) => state.exchange);
@@ -69,6 +87,14 @@ function App() {
   const dateChanged = (e) => {
     // 선택된 국가 저장
     dispatch(setDate(e.target.value));
+
+    // 선택된 날짜를 다른 날짜 포맷으로 변환
+    const newDate = new Date(e.target.value);
+    const year = newDate.getFullYear();
+    const month = months[newDate.getMonth()];
+    const day =
+      newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate();
+    setDate2(`${year}-${month}-${day}`);
   };
 
   return (
@@ -144,6 +170,13 @@ function App() {
             {(cost / rate[choose]) * rate[choose2]}
           </p>
         </StyledResultRow>
+        <p
+          style={{
+            fontSize: "30px",
+          }}
+        >
+          {date2}
+        </p>
         <StyledDateRow>
           <p
             style={{

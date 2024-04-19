@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  // api에서 받아온 환율
   rate: {},
+  // 초기 지정 날짜
   date: "2022-01-01",
 };
 
